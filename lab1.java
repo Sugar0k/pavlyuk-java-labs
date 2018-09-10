@@ -12,16 +12,16 @@ public class lab1 {
         String firstName = "Александр";
         String middleName = "Петрович";
         String lastName = "Павлюк";
-        String teacherFirstName = "Татьаяна";
-        String teacherMiddleName = "Викторовна";
-        String teacherLastName = "Волкова";
+        String teacherFirstName = "Елена";
+        String teacherMiddleName = "Сергеевна";
+        String teacherLastName = "Владимирова";
         String groupCode = "ИВТ/б-12о";
 
         Date date = new Date();
 
         int variant = 16;
-        int productWeight = 10;
-        int tareWeight= 1;
+        int productWeight = 19;
+        int tareWeight= 3;
         int totalWeight = productWeight + tareWeight;
 
         String fullName = fullName(lastName, firstName, middleName);
