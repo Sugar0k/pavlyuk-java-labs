@@ -7,6 +7,33 @@ public class myStack {
         private myStackElement tail;
         private int size = 0;
 
+        public boolean empty(){
+            if (size == 0) return true;
+            return false;
+        }
+
+        public void temp(){ // Заменяет первый минимальный элемент на 0
+            if (size == 1){
+                head.data = 0;
+                return;
+            }
+            int min = head.data;
+            myStackElement t = head;
+            myStackElement a = head;
+            while (t.next != null){
+                if (t.data < min){
+                    min = t.data;
+                    a = t;
+                }
+                t = t.next;
+            }
+            if (tail.data < min){
+                tail.data = 0;
+                return;
+            }
+            a.data = 0;
+        }
+
         public void clear(){
             head = null;
             tail = null;
@@ -14,32 +41,15 @@ public class myStack {
             return;
         }
 
-        public void copy(Stack list){
-            int[] a = new int[size];
-            if (size == 0) return;
-            myStackElement t = head;
-            int i = size;
-            while (t.next != null) {
-                i--;
-                a[i] = t.data;
-                t = t.next;
-            }
-            i--;
-            a[i] = t.data;
-
-            for (int j : a){
-                list.push(j);
-            }
-        }
-
         public int chek(){
             return head.data;
         }
 
-        public int get(){
+        public int pop(){
             int c = head.data;
-            if (size == 1) {
+            if (size != 1) {
                 head = head.next;
+                size--;
             } else {
                 clear();
             }
@@ -66,7 +76,7 @@ public class myStack {
         public void printStack()
         {
             if (size == 0){
-                System.out.println("Ваш список пуст");
+                System.out.println("Ваш стек пуст");
                 return;
             }
             myStackElement t = head;
