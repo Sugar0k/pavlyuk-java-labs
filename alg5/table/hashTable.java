@@ -1,101 +1,115 @@
 package table;
 
-public class hashTable { //without hope
-
+public class hashTable { //очищайте мусор :D
 
     public static class hash {
-        private final int hashSize = 10;
+        private final int hashSize;
         private class box{
             String data;
             int key;
-            boolean state;
+            boolean state,next,first;
+            int earlyI;
+            byte temp;// 0 - ничего; 1 - первый; 2 - перед ним есть;
         }
 
-        private box arr[] = new box[hashSize];
+        private box arr[];
 
-        public void kill(int key){
-            int temp = key % hashSize;
+        private int takeKey(int key, boolean state) {// state показывает какую ячеку искать(если false то свобоную true наоборот)
+            int index = key % hashSize;
+            if (state == true) if (arr[index].state == true && arr[index].key == key){
+                System.out.println("yvgbhnjo");
+                arr[index].temp = 1;
+                return index;
+            }
+            else if (arr[index].state == false && arr[index].next == false){
+                arr[index].temp = 1;
+                System.out.println("nope");
+                return index;
+            }
             int i = 0;
             final int c = 3, d = 2;
-            while (arr[temp].state){
-                if (arr[temp].key == key){
-                    arr[temp].data = null;
-                    arr[temp].state = false;
-                    arr[temp].key =  0;
+            if (state) {
+                while (arr[index].next) {
+                    if (arr[index].key == key) {
+                        return index;
+                    }
+                    i++;
+                    index = (key % hashSize + (c * i + d * i * i)) % hashSize;
+                }
+                if (arr[index].key == key) {
+                    return index;
                 }
                 i++;
-                temp = (key % hashSize + (c * i + d * i * i)) % hashSize;
+                index = (key % hashSize + (c * i + d * i * i)) % hashSize;
+                return index;
             }
-            arr[temp].data = null;
-            arr[temp].state = false;
-            arr[temp].key =  0;
+            else {
+                while (arr[index].state != false) {
+                    i++;
+                    index = (key % hashSize + (c * i + d * i * i)) % hashSize;
+                }
+                if (i == 1) arr[index].earlyI = key % hashSize;
+                else {
+                    i--;
+                    arr[index].earlyI = (key % hashSize + (c * i + d * i * i)) % hashSize;
+                 //   System.out.println("asdasdas");
+                }
+                return index;
+            }
+        }
+
+        public void kill(int key){
+            int index = takeKey(key, true);
+            arr[index].data = null;
+            arr[index].state = false;
+            arr[index].key =  0;
+           // System.out.println(index);
         }
 
         public boolean empty(int key){
-            int temp = key % hashSize;
-            if (arr[temp].state == false) return true;
-            else {
-                int i = 0;
-                final int c = 3, d = 2;
-                while (arr[temp].state){
-                    if (arr[temp].key == key) return false;
-                    i++;
-                    temp = (key % hashSize + (c * i + d * i * i)) % hashSize;
-                }
-                return true;
-            }
+            int index = takeKey(key, true);
+            return !arr[index].state;
         }
 
         public String search(int key){
-            int temp = key % hashSize;
-            int i = 0;
-            final int c = 3, d = 2;
-            while (arr[temp].state){
-                if (arr[temp].key == key) return arr[temp].data;
-                i++;
-                temp = (key % hashSize + (c * i + d * i * i)) % hashSize;
-            }
-            return arr[temp].data;
+            int index = takeKey(key, true);
+            return arr[index].data;
+
+        }
+
+        public void getState(int key){
+            int index = takeKey(key,true);
+         //   System.out.println(arr[index].state);
         }
 
         public void show(){
             for (int i = 0; i < hashSize; i++){
-                if (arr[i].state == false) System.out.println(i + " clear" );
-                else System.out.println(i + " " + arr[i].key + " " + arr[i].data + " " + arr[i].state);
+                if (arr[i].state == false) System.out.println(i + " " + arr[i].key + " " + arr[i].data + " " + arr[i].state + " " + arr[i].next + " " + arr[i].earlyI + " " + arr[i].first + " clear");
+                else System.out.println(i + " " + arr[i].key + " " + arr[i].data + " " + arr[i].state + " " + arr[i].next + " " + arr[i].earlyI + " " + arr[i].first);
             }
-        }
-
-        private int takeKey(int key){
-            int temp = key % hashSize;
-            if (arr[temp].state == false) return temp;
-            else {
-                int i = 0;
-                final int c = 3, d = 2;
-                while (arr[temp].state){
-                    i++;
-                    temp = (key % hashSize + (c * i + d * i * i)) % hashSize;
-                }
-                return temp;
-            }
-
         }
 
         public void setCell(int a, String data){
-            int index = takeKey(a);
+            int index = takeKey(a,false);
+            if (arr[index].temp == 1) arr[index].first = true;
+            if (arr[index].earlyI != -1){
+                if (arr[index].first == false) arr[arr[index].earlyI].next = true;
+                arr[index].earlyI = -1;
+            }
             arr[index].state = true;
             arr[index].data = data;
             arr[index].key = a;
+            arr[index].temp = 0;
         }
 
-        public void getState(int a){
-            int b = takeKey(a);
-            System.out.println(arr[b].state);
-        }
-
-        public hash(){
+        public hash(int size){
+            hashSize = size;
+            arr = new box[hashSize];
             for (int i = 0; i < arr.length; i++){
                 arr[i] = new box();
+                arr[i].earlyI = -1;
             }
+
         }
 
     }
