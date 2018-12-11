@@ -1,6 +1,6 @@
 package table;
 
-public class hashTable { //очищайте мусор :D
+public class hashTable {
 
     public static class hash {
         private final int hashSize;
@@ -8,20 +8,19 @@ public class hashTable { //очищайте мусор :D
             String data;
             int key;
             boolean state,next,first; // состояние ячейки; указатель есть ли элемент дальше; указатель первый ли элемент
-            int earlyI;
-            byte temp;// 0 - ничего; 1 - первый;
+            int earlyI;//Id предыдущего элемента
         }
 
         private box arr[];
 
-        private int takeKey(int key, boolean state) {// state показывает какую ячеку искать(если false то свобоную true наоборот)
+        private int takeKey(int key, boolean state) {// state показывает какую ячеку искать(если false то свобоную true занятую)
             int index = key % hashSize;
             if (state == true) if (arr[index].state == true && arr[index].key == key){ //обработка первых элементов
-                arr[index].temp = 1;
+                arr[index].first = true;
                 return index;
             }
             else if (arr[index].state == false && arr[index].next == false){
-                arr[index].temp = 1;
+                arr[index].first = true;
                 return index;
             }
             int i = 0;
@@ -57,7 +56,6 @@ public class hashTable { //очищайте мусор :D
 
         public void del(int key){
             int index = takeKey(key, true);
-            //clearTrash(key, index);
             arr[index].data = null;
             arr[index].state = false;
             arr[index].key =  0;
@@ -84,7 +82,6 @@ public class hashTable { //очищайте мусор :D
 
         public void setCell(int a, String data){ //задать знач ячейки
             int index = takeKey(a,false);
-            if (arr[index].temp == 1) arr[index].first = true;
             if (arr[index].earlyI != -1){
                 if (arr[index].first ==false) arr[arr[index].earlyI].next = true;
                 arr[index].earlyI = -1;
@@ -92,7 +89,6 @@ public class hashTable { //очищайте мусор :D
             arr[index].state = true;
             arr[index].data = data;
             arr[index].key = a;
-            arr[index].temp = 0;
         }
 
         public hash(int size){
@@ -102,9 +98,6 @@ public class hashTable { //очищайте мусор :D
                 arr[i] = new box();
                 arr[i].earlyI = -1;
             }
-
         }
-
     }
-
 }
